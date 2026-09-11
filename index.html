@@ -414,7 +414,13 @@
     .hours, .ride { font-size: .72rem; }
     .flag { margin-left: 0; margin-top: .2rem; }
     .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 1.5rem; }
-    .leg-bar .open { margin-left: 0; flex-basis: 100%; }
+    .leg-bar .open {
+      margin-left: 0;
+      flex-basis: 100%;
+      border-bottom: 0;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
     .rider { width: 2.1rem; margin-left: -1.05rem; }
     .track { margin: 0 1.3rem; }
     .progress { font-size: .72rem; gap: .55rem; }
