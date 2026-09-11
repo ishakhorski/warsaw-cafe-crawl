@@ -124,7 +124,7 @@
   }
 
   /* The bike rides the bar: it sits at the same percentage as the fill, and its
-     wheels turn only while it is actually moving between two stops. */
+     it travels there when a stop is ticked. */
   .progress {
     display: grid;
     grid-template-columns: auto 1fr auto;
@@ -161,9 +161,6 @@
     transition: left .7s cubic-bezier(.32, .72, .35, 1);
   }
   .rider svg { display: block; width: 100%; height: auto; }
-  .rider .wheel { transform-box: fill-box; transform-origin: center; }
-  .progress.rolling .wheel { animation: roll .5s linear infinite; }
-  @keyframes roll { to { transform: rotate(360deg); } }
 
   section { display: flex; flex-direction: column; gap: 1rem; }
   .section-head {
@@ -350,14 +347,6 @@
     white-space: nowrap;
   }
   .leg-bar .open:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-  .chain {
-    margin: .35rem 0 0;
-    font-size: .88rem;
-    line-height: 1.45;
-    color: var(--ink-soft);
-    max-width: 56em;
-  }
-
   footer {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
     font-size: .7rem;
@@ -428,7 +417,6 @@
 
   @media (prefers-reduced-motion: reduce) {
     .bar i, .rider, .chev, tr.stop td, tr.stop, tr.stop .cell, .tick { transition: none; }
-    .progress.rolling .wheel { animation: none; }
   }
 </style>
 </head>
@@ -449,19 +437,14 @@
     <span class="cap" id="count">0 of 23</span>
     <div class="track">
       <div class="rider" id="rider" aria-hidden="true">
-        <svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2"
+        <svg viewBox="0 0 68 40" fill="none" stroke="currentColor" stroke-width="2"
              stroke-linecap="round" stroke-linejoin="round">
-          <g class="wheel">
-            <circle cx="13" cy="28" r="9"></circle>
-            <path d="M13 19v18M4 28h18M6.6 21.6l12.8 12.8M19.4 21.6L6.6 34.4" stroke-width="1"></path>
-          </g>
-          <g class="wheel">
-            <circle cx="51" cy="28" r="9"></circle>
-            <path d="M51 19v18M42 28h18M44.6 21.6l12.8 12.8M57.4 21.6L44.6 34.4" stroke-width="1"></path>
-          </g>
-          <path d="M13 28l13-11h12M26 17l6 11M32 28h19M38 17l-4-4h-5"></path>
-          <path d="M22 13h8M29 13l-3 4"></path>
-          <circle cx="32" cy="28" r="2.2" stroke-width="1.5"></circle>
+          <circle cx="14" cy="27" r="10" stroke-width="1.6"></circle>
+          <circle cx="54" cy="27" r="10" stroke-width="1.6"></circle>
+          <path d="M14 27h20M34 27l-8-15M26 12l18-2M34 27l10-17M44 10l3 5 7 12"></path>
+          <path d="M22 11h7"></path>
+          <path d="M44 10h5a3 3 0 0 1 0 6h-1.5"></path>
+          <circle cx="34" cy="27" r="2.4" stroke-width="1.4"></circle>
         </svg>
       </div>
       <div class="bar"><i id="fill"></i></div>
@@ -525,17 +508,16 @@
   // Only the stops that can end the ride carry a flag; a 19:00 close cannot.
   var FLAGS = { 18: "closes 14:00", 22: "closes 16:55", 10: "closes 17:00", 5: "closes 17:30", 9: "call ahead" };
 
-  // first stop, last stop, name, the chain of places, the cycling directions
+  // first stop, last stop, the district it covers, the cycling directions
   var LEGS = [
-    [0, 4, "Leg 1 · Praga", "Coffee Kamionkowska → No i Co → ROST → Domo Bake.ry → MUAS COFFEE", "https://www.google.com/maps/dir/Coffee+Kamionkowska+I+Kawa+speciality+I+Wino+I+Piekarnia+rzemie%C5%9Blnicza+I+%C5%9Aniadania+I+Cukiernia+I+Wypieki+domowe+I+Lunch+I,+Kamionkowska+9%2FU3,+Warszawa,+Polska/No+i+Co,+Kamionkowska+19%2FU2,+Warszawa,+Poland/ROST+microroastery+%26+caf%C3%A9,+Kobielska+55,+Warszawa,+Polska/Domo+Bake.ry,+Mi%C4%99dzyborska+57%2F65,+Warszawa,+Polska/MUAS+COFFEE,+Dolna+30A,+Warszawa,+Polska/data=!4m32!4m31!1m5!1m1!19sChIJb7W-RgXNHkcRCRuaUFViE5U!2m2!1d21.0616272!2d52.247735399999996!1m5!1m1!19sChIJuW8JyrXNHkcRlfIjwRgMQCU!2m2!1d21.0632475!2d52.247651999999995!1m5!1m1!19sChIJ9ZOrZlnNHkcR3ED4GGR65EU!2m2!1d21.082909!2d52.247242!1m5!1m1!19sChIJ4ZsG5HXNHkcR1CxDvBdqWxI!2m2!1d21.0793051!2d52.2394256!1m5!1m1!19sChIJ69kyex3NHkcRDiZTC35u1GA!2m2!1d21.0286379!2d52.2004564!3e1?entry=gemini&utm_source=gemini&utm_campaign=gem-default"],
-    [5, 13, "Leg 2 · Mokotów to Śródmieście", "MUAS COFFEE → Pies Cafe → BOZO → Cukiernia Kostki → Filtry Cafe → Błogo → Cafe Central → El Cafetero → Relax na Wilczej → Pan tu nie stał", "https://www.google.com/maps/dir/MUAS+COFFEE,+Dolna+30A,+Warszawa,+Polska/Pies+Cafe,+Konduktorska+14%2FU1,+Warszawa,+Poland/BOZO,+Jurija+Gagarina+8,+Warszawa,+Poland/Cukiernia+Kostki,+Antoniego+J%C3%B3zefa+Madali%C5%84skiego+35%2F19,+Warszawa,+Polska/Filtry+Cafe,+Juliana+Ursyna+Niemcewicza+3,+Warszawa,+Poland/B%C5%82ogo.+Pracownia+Cukiernicza,+Andrzejowska+9,+Warszawa,+Polska/Cafe+Central,+Lwowska+2A,+Warszawa,+Poland/El+Cafetero+Kawiarnia+-+Emilii+Plater,+Emilii+Plater+8,+Warszawa,+Polska/Relax+na+Wilczej,+Wilcza+17,+Warszawa,+Polska/Pan+tu+nie+sta%C5%82,+Koszykowa+34%2F50,+Warszawa,+Polska/data=!4m62!4m61!1m5!1m1!19sChIJ69kyex3NHkcRDiZTC35u1GA!2m2!1d21.0286379!2d52.2004564!1m5!1m1!19sChIJP4YK3XXNHkcR2HqnVb7SYPg!2m2!1d21.0292466!2d52.2014651!1m5!1m1!19sChIJv_iqQr3NHkcRvjlgjzU06aw!2m2!1d21.045846299999997!2d52.2071152!1m5!1m1!19sChIJTdNWbgDNHkcRJSTA2wMTD0E!2m2!1d21.015397999999998!2d52.2041475!1m5!1m1!19sChIJOeCiO5bMHkcRr322Y6Dx2w0!2m2!1d20.9885493!2d52.2204761!1m5!1m1!19sChIJ97Cr6T7NHkcR84PttUXDCSI!2m2!1d20.9812519!2d52.2214947!1m5!1m1!19sChIJqfj8l_HNHkcR9ySVbhm6uQI!2m2!1d21.0123648!2d52.2205036!1m5!1m1!19sChIJix7ahIHNHkcRPMe-4fOX6cg!2m2!1d21.00825!2d52.2237406!1m5!1m1!19sChIJiy1dZGnNHkcRt8AxTMoosxI!2m2!1d21.018664299999998!2d52.2253608!1m5!1m1!19sChIJzdzV9u7MHkcRzy215vwhny0!2m2!1d21.0140925!2d52.2229357!3e1?entry=gemini&utm_source=gemini&utm_campaign=gem-default"],
-    [14, 22, "Leg 3 · the river and Muranów", "Pan tu nie stał → Przystań → Coffeedesk → HELISA → cor. → Labuna → Dobra Materia → Tekla → ASTRA → Fat White", "https://www.google.com/maps/dir/Pan+tu+nie+sta%C5%82,+Koszykowa+34%2F50,+Warszawa,+Polska/Przysta%C5%84+kawiarnia,+Bulwar+Flotylli+Pi%C5%84skiej+1E,+Warszawa,+Polska/Coffeedesk+Kawiarnia+-+Nowy+%C5%9Awiat,+Nowy+%C5%9Awiat+6%2F12,+Warszawa,+Polska/HELISA+COLLAGEN+CAFE,+Moliera+6,+Warszawa,+Polska/cor.+specialty+coffee,+Krakowskie+Przedmie%C5%9Bcie+62,+Warszawa,+Polska/Labuna+-+Kawa+i+Akcesoria,+P%C5%82ocka+22A,+Warszawa,+Polska/Kawiarnia+Dobra+Materia,+Nowolipki+13,+Warszawa,+Polska/Tekla+-+kawa+i+winyle,+Genera%C5%82a+W%C5%82adys%C5%82awa+Andersa+13,+Warszawa,+Poland/ASTRA+Coffeebar,+Kaliny+J%C3%B3zefa+Madali%C5%84skiego+9,+Warszawa,+Polska/Fat+White+Coffee+Bar,+Genera%C5%82a+W%C5%82adys%C5%82awa+Andersa+6%2FLU2,+Warszawa,+Poland/data=!4m62!4m61!1m5!1m1!19sChIJzdzV9u7MHkcRzy215vwhny0!2m2!1d21.0140925!2d52.2229357!1m5!1m1!19sChIJU4fXNTXNHkcROIyVRt-z7VE!2m2!1d21.049284399999998!2d52.220902699999996!1m5!1m1!19sChIJo_yUEc3NHkcRL2l-ePTw-tc!2m2!1d21.0219302!2d52.230766499999994!1m5!1m1!19sChIJSXl_6OvNHkcRspe34HwMgLA!2m2!1d21.011689!2d52.2442071!1m5!1m1!19sChIJKWK5GQDNHkcRH8VV4ITwdZI!2m2!1d21.014485!2d52.2451194!1m5!1m1!19sChIJH3kzL5vJHkcRb38JptuXzM0!2m2!1d20.9657837!2d52.2351296!1m5!1m1!19sChIJk7jD-qPNHkcRGP_7kzA7Hrc!2m2!1d20.9945272!2d52.2455959!1m5!1m1!19sChIJF5m0tE3NHkcROPtFRO6a2kA!2m2!1d20.9970057!2d52.248255699999994!1m5!1m1!19sChIJXedhIgDLHkcR7B4x0cHzVMg!2m2!1d20.966455699999997!2d52.2563445!1m5!1m1!19sChIJo3nJanrMHkcRWJfFi_wf1pM!2m2!1d20.999205999999997!2d52.250166!3e1?entry=gemini&utm_source=gemini&utm_campaign=gem-default"]
+    [0, 4, "Praga", "https://www.google.com/maps/dir/Coffee+Kamionkowska+I+Kawa+speciality+I+Wino+I+Piekarnia+rzemie%C5%9Blnicza+I+%C5%9Aniadania+I+Cukiernia+I+Wypieki+domowe+I+Lunch+I,+Kamionkowska+9%2FU3,+Warszawa,+Polska/No+i+Co,+Kamionkowska+19%2FU2,+Warszawa,+Poland/ROST+microroastery+%26+caf%C3%A9,+Kobielska+55,+Warszawa,+Polska/Domo+Bake.ry,+Mi%C4%99dzyborska+57%2F65,+Warszawa,+Polska/MUAS+COFFEE,+Dolna+30A,+Warszawa,+Polska/data=!4m32!4m31!1m5!1m1!19sChIJb7W-RgXNHkcRCRuaUFViE5U!2m2!1d21.0616272!2d52.247735399999996!1m5!1m1!19sChIJuW8JyrXNHkcRlfIjwRgMQCU!2m2!1d21.0632475!2d52.247651999999995!1m5!1m1!19sChIJ9ZOrZlnNHkcR3ED4GGR65EU!2m2!1d21.082909!2d52.247242!1m5!1m1!19sChIJ4ZsG5HXNHkcR1CxDvBdqWxI!2m2!1d21.0793051!2d52.2394256!1m5!1m1!19sChIJ69kyex3NHkcRDiZTC35u1GA!2m2!1d21.0286379!2d52.2004564!3e1?entry=gemini&utm_source=gemini&utm_campaign=gem-default"],
+    [5, 13, "Mokotów to Śródmieście", "https://www.google.com/maps/dir/MUAS+COFFEE,+Dolna+30A,+Warszawa,+Polska/Pies+Cafe,+Konduktorska+14%2FU1,+Warszawa,+Poland/BOZO,+Jurija+Gagarina+8,+Warszawa,+Poland/Cukiernia+Kostki,+Antoniego+J%C3%B3zefa+Madali%C5%84skiego+35%2F19,+Warszawa,+Polska/Filtry+Cafe,+Juliana+Ursyna+Niemcewicza+3,+Warszawa,+Poland/B%C5%82ogo.+Pracownia+Cukiernicza,+Andrzejowska+9,+Warszawa,+Polska/Cafe+Central,+Lwowska+2A,+Warszawa,+Poland/El+Cafetero+Kawiarnia+-+Emilii+Plater,+Emilii+Plater+8,+Warszawa,+Polska/Relax+na+Wilczej,+Wilcza+17,+Warszawa,+Polska/Pan+tu+nie+sta%C5%82,+Koszykowa+34%2F50,+Warszawa,+Polska/data=!4m62!4m61!1m5!1m1!19sChIJ69kyex3NHkcRDiZTC35u1GA!2m2!1d21.0286379!2d52.2004564!1m5!1m1!19sChIJP4YK3XXNHkcR2HqnVb7SYPg!2m2!1d21.0292466!2d52.2014651!1m5!1m1!19sChIJv_iqQr3NHkcRvjlgjzU06aw!2m2!1d21.045846299999997!2d52.2071152!1m5!1m1!19sChIJTdNWbgDNHkcRJSTA2wMTD0E!2m2!1d21.015397999999998!2d52.2041475!1m5!1m1!19sChIJOeCiO5bMHkcRr322Y6Dx2w0!2m2!1d20.9885493!2d52.2204761!1m5!1m1!19sChIJ97Cr6T7NHkcR84PttUXDCSI!2m2!1d20.9812519!2d52.2214947!1m5!1m1!19sChIJqfj8l_HNHkcR9ySVbhm6uQI!2m2!1d21.0123648!2d52.2205036!1m5!1m1!19sChIJix7ahIHNHkcRPMe-4fOX6cg!2m2!1d21.00825!2d52.2237406!1m5!1m1!19sChIJiy1dZGnNHkcRt8AxTMoosxI!2m2!1d21.018664299999998!2d52.2253608!1m5!1m1!19sChIJzdzV9u7MHkcRzy215vwhny0!2m2!1d21.0140925!2d52.2229357!3e1?entry=gemini&utm_source=gemini&utm_campaign=gem-default"],
+    [14, 22, "Powiśle to Muranów", "https://www.google.com/maps/dir/Pan+tu+nie+sta%C5%82,+Koszykowa+34%2F50,+Warszawa,+Polska/Przysta%C5%84+kawiarnia,+Bulwar+Flotylli+Pi%C5%84skiej+1E,+Warszawa,+Polska/Coffeedesk+Kawiarnia+-+Nowy+%C5%9Awiat,+Nowy+%C5%9Awiat+6%2F12,+Warszawa,+Polska/HELISA+COLLAGEN+CAFE,+Moliera+6,+Warszawa,+Polska/cor.+specialty+coffee,+Krakowskie+Przedmie%C5%9Bcie+62,+Warszawa,+Polska/Labuna+-+Kawa+i+Akcesoria,+P%C5%82ocka+22A,+Warszawa,+Polska/Kawiarnia+Dobra+Materia,+Nowolipki+13,+Warszawa,+Polska/Tekla+-+kawa+i+winyle,+Genera%C5%82a+W%C5%82adys%C5%82awa+Andersa+13,+Warszawa,+Poland/ASTRA+Coffeebar,+Kaliny+J%C3%B3zefa+Madali%C5%84skiego+9,+Warszawa,+Polska/Fat+White+Coffee+Bar,+Genera%C5%82a+W%C5%82adys%C5%82awa+Andersa+6%2FLU2,+Warszawa,+Poland/data=!4m62!4m61!1m5!1m1!19sChIJzdzV9u7MHkcRzy215vwhny0!2m2!1d21.0140925!2d52.2229357!1m5!1m1!19sChIJU4fXNTXNHkcROIyVRt-z7VE!2m2!1d21.049284399999998!2d52.220902699999996!1m5!1m1!19sChIJo_yUEc3NHkcRL2l-ePTw-tc!2m2!1d21.0219302!2d52.230766499999994!1m5!1m1!19sChIJSXl_6OvNHkcRspe34HwMgLA!2m2!1d21.011689!2d52.2442071!1m5!1m1!19sChIJKWK5GQDNHkcRH8VV4ITwdZI!2m2!1d21.014485!2d52.2451194!1m5!1m1!19sChIJH3kzL5vJHkcRb38JptuXzM0!2m2!1d20.9657837!2d52.2351296!1m5!1m1!19sChIJk7jD-qPNHkcRGP_7kzA7Hrc!2m2!1d20.9945272!2d52.2455959!1m5!1m1!19sChIJF5m0tE3NHkcROPtFRO6a2kA!2m2!1d20.9970057!2d52.248255699999994!1m5!1m1!19sChIJXedhIgDLHkcR7B4x0cHzVMg!2m2!1d20.966455699999997!2d52.2563445!1m5!1m1!19sChIJo3nJanrMHkcRWJfFi_wf1pM!2m2!1d20.999205999999997!2d52.250166!3e1?entry=gemini&utm_source=gemini&utm_campaign=gem-default"]
   ];
 
   var STORE_KEY = "warsaw-cafe-crawl-done";
   var state = readState();
   var overrides = {};
-  var rollTimer = null;
 
   function readState() {
     var saved = [];
@@ -565,9 +547,8 @@
           '<button class="leg-toggle" type="button" data-leg="' + li + '" aria-expanded="' + open + '">' +
             '<span class="chev" aria-hidden="true">▾</span>' + esc(leg[2]) +
             '<span class="leg-count">' + legCount(li) + "</span></button>" +
-          '<a class="open" href="' + esc(leg[4]) + '" target="_blank" rel="noopener">Cycling directions ↗</a>' +
-        "</div>" +
-        '<p class="chain">' + esc(leg[3]) + "</p></td></tr>";
+          '<a class="open" href="' + esc(leg[3]) + '" target="_blank" rel="noopener">Cycling directions ↗</a>' +
+        "</div></td></tr>";
 
       for (var i = leg[0]; i <= leg[1]; i++) {
         var s = STOPS[i];
@@ -642,15 +623,6 @@
       : left.toFixed(1) + " km to ride";
   }
 
-  // The wheels turn only while the bike is moving between two stops. A bike
-  // spinning its wheels while parked reads as a busy spinner, not a ride.
-  function roll() {
-    var bar = document.getElementById("progress");
-    bar.classList.add("rolling");
-    clearTimeout(rollTimer);
-    rollTimer = setTimeout(function () { bar.classList.remove("rolling"); }, 750);
-  }
-
   document.getElementById("rows").addEventListener("change", function (e) {
     var box = e.target.closest(".tick");
     if (!box) return;
@@ -661,7 +633,6 @@
     delete overrides[li];
     applyLeg(li);
     updateTotals();
-    roll();
     save();
   });
 
@@ -677,7 +648,6 @@
     state = {};
     overrides = {};
     render();
-    roll();
     save();
   });
 
