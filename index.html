@@ -104,11 +104,6 @@
     text-transform: uppercase;
     margin: 0;
   }
-  .lede {
-    max-width: 34em;
-    color: var(--ink-soft);
-    margin: .75rem 0 0;
-  }
 
   .facts {
     display: flex;
@@ -262,41 +257,74 @@
   }
   tr.done .hours, tr.done .ride, tr.done .sub, tr.done .stop-no { color: var(--done-ink); }
 
-  .legs { display: grid; gap: .9rem; }
-  .leg {
+  tr.leg-head td {
     background: var(--panel);
-    border: 1px solid var(--rule);
-    border-left: 3px solid var(--accent);
-    padding: 1rem 1.15rem;
-    box-shadow: var(--shadow);
-    display: flex;
-    flex-direction: column;
-    gap: .45rem;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+    padding: .85rem 1rem .8rem;
   }
-  .leg h3 {
-    margin: 0;
+  tr.leg-head:first-child td { border-top: none; }
+  .leg-bar {
+    display: flex;
+    align-items: baseline;
+    gap: .7rem;
+    flex-wrap: wrap;
+  }
+  .leg-toggle {
+    display: inline-flex;
+    align-items: baseline;
+    gap: .55rem;
+    font: inherit;
     font-family: "Oswald", "Arial Narrow", sans-serif;
     font-weight: 500;
-    font-size: 1.05rem;
+    font-size: 1.02rem;
     letter-spacing: .05em;
     text-transform: uppercase;
+    color: var(--ink);
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
   }
-  .leg .chain {
-    font-size: .92rem;
-    color: var(--ink-soft);
+  .leg-toggle:hover { color: var(--accent); }
+  .leg-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .chev {
+    display: inline-block;
+    font-size: .7em;
+    color: var(--accent);
+    transition: transform .2s ease;
   }
-  .leg .open {
-    align-self: flex-start;
+  tr.leg-head.collapsed .chev { transform: rotate(-90deg); }
+  @media (prefers-reduced-motion: reduce) {
+    .chev { transition: none; }
+  }
+  .leg-count {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: .7rem;
+    font-size: .68rem;
+    letter-spacing: .1em;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-faint);
+  }
+  tr.leg-head.collapsed .leg-count { color: var(--accent); }
+  .leg-bar .open {
+    margin-left: auto;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .68rem;
     letter-spacing: .1em;
     text-transform: uppercase;
     color: var(--accent);
     text-decoration: none;
     border-bottom: 1px solid var(--accent);
     padding-bottom: 1px;
+    white-space: nowrap;
   }
-  .leg .open:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .leg-bar .open:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .chain {
+    margin: .35rem 0 0;
+    font-size: .88rem;
+    color: var(--ink-soft);
+    max-width: 56em;
+  }
 
   footer {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
@@ -325,7 +353,6 @@
   <header>
     <p class="eyebrow">Warszawa · Saturday · by bike</p>
     <h1>Twenty-three coffees<br>and a bicycle</h1>
-    <p class="lede">Praga to Muranów, east bank to west, in the order the ride actually runs. Tick a stop when you have had the coffee. The clock beside each name is Saturday opening only.</p>
     <div class="facts">
       <div class="fact"><b>23</b><span>stops</span></div>
       <div class="fact"><b>39.8 km</b><span>total ride</span></div>
@@ -342,8 +369,8 @@
 
   <section>
     <div class="section-head">
-      <h2>The stops</h2>
-      <span class="eyebrow">in riding order</span>
+      <h2>The route</h2>
+      <span class="eyebrow">three legs · 23 stops</span>
     </div>
     <div class="table-scroll">
       <table>
@@ -359,14 +386,6 @@
         <tbody id="rows"></tbody>
       </table>
     </div>
-  </section>
-
-  <section>
-    <div class="section-head">
-      <h2>The route, in three legs</h2>
-      <span class="eyebrow">cycling directions</span>
-    </div>
-    <div class="legs" id="legs"></div>
   </section>
 
   <footer>
@@ -406,11 +425,11 @@
   var FLAGS = { 18: "closes 14:00", 22: "closes 16:55", 10: "closes 17:00", 5: "closes 17:30", 9: "call ahead" };
 
   var LEGS = [
-    ["Leg 1 · stops 1–5", "Coffee Kamionkowska → No i Co → ROST → Domo Bake.ry → MUAS COFFEE",
+    [0, 4, "Leg 1 · Praga", "Coffee Kamionkowska → No i Co → ROST → Domo Bake.ry → MUAS COFFEE",
      "https://www.google.com/maps/dir/Coffee+Kamionkowska+I+Kawa+speciality+I+Wino+I+Piekarnia+rzemie%C5%9Blnicza+I+%C5%9Aniadania+I+Cukiernia+I+Wypieki+domowe+I+Lunch+I,+Kamionkowska+9%2FU3,+Warszawa,+Polska/No+i+Co,+Kamionkowska+19%2FU2,+Warszawa,+Poland/ROST+microroastery+%26+caf%C3%A9,+Kobielska+55,+Warszawa,+Polska/Domo+Bake.ry,+Mi%C4%99dzyborska+57%2F65,+Warszawa,+Polska/MUAS+COFFEE,+Dolna+30A,+Warszawa,+Polska/data=!4m32!4m31!1m5!1m1!19sChIJb7W-RgXNHkcRCRuaUFViE5U!2m2!1d21.0616272!2d52.247735399999996!1m5!1m1!19sChIJuW8JyrXNHkcRlfIjwRgMQCU!2m2!1d21.0632475!2d52.247651999999995!1m5!1m1!19sChIJ9ZOrZlnNHkcR3ED4GGR65EU!2m2!1d21.082909!2d52.247242!1m5!1m1!19sChIJ4ZsG5HXNHkcR1CxDvBdqWxI!2m2!1d21.0793051!2d52.2394256!1m5!1m1!19sChIJ69kyex3NHkcRDiZTC35u1GA!2m2!1d21.0286379!2d52.2004564!3e1?entry=gemini&utm_source=gemini&utm_campaign=gem-default"],
-    ["Leg 2 · stops 5–14", "MUAS COFFEE → Pies Cafe → BOZO → Cukiernia Kostki → Filtry Cafe → Błogo → Cafe Central → El Cafetero → Relax na Wilczej → Pan tu nie stał",
+    [5, 13, "Leg 2 · Mokotów to Śródmieście", "MUAS COFFEE → Pies Cafe → BOZO → Cukiernia Kostki → Filtry Cafe → Błogo → Cafe Central → El Cafetero → Relax na Wilczej → Pan tu nie stał",
      "https://www.google.com/maps/dir/MUAS+COFFEE,+Dolna+30A,+Warszawa,+Polska/Pies+Cafe,+Konduktorska+14%2FU1,+Warszawa,+Poland/BOZO,+Jurija+Gagarina+8,+Warszawa,+Poland/Cukiernia+Kostki,+Antoniego+J%C3%B3zefa+Madali%C5%84skiego+35%2F19,+Warszawa,+Polska/Filtry+Cafe,+Juliana+Ursyna+Niemcewicza+3,+Warszawa,+Poland/B%C5%82ogo.+Pracownia+Cukiernicza,+Andrzejowska+9,+Warszawa,+Polska/Cafe+Central,+Lwowska+2A,+Warszawa,+Poland/El+Cafetero+Kawiarnia+-+Emilii+Plater,+Emilii+Plater+8,+Warszawa,+Polska/Relax+na+Wilczej,+Wilcza+17,+Warszawa,+Polska/Pan+tu+nie+sta%C5%82,+Koszykowa+34%2F50,+Warszawa,+Polska/data=!4m62!4m61!1m5!1m1!19sChIJ69kyex3NHkcRDiZTC35u1GA!2m2!1d21.0286379!2d52.2004564!1m5!1m1!19sChIJP4YK3XXNHkcR2HqnVb7SYPg!2m2!1d21.0292466!2d52.2014651!1m5!1m1!19sChIJv_iqQr3NHkcRvjlgjzU06aw!2m2!1d21.045846299999997!2d52.2071152!1m5!1m1!19sChIJTdNWbgDNHkcRJSTA2wMTD0E!2m2!1d21.015397999999998!2d52.2041475!1m5!1m1!19sChIJOeCiO5bMHkcRr322Y6Dx2w0!2m2!1d20.9885493!2d52.2204761!1m5!1m1!19sChIJ97Cr6T7NHkcR84PttUXDCSI!2m2!1d20.9812519!2d52.2214947!1m5!1m1!19sChIJqfj8l_HNHkcR9ySVbhm6uQI!2m2!1d21.0123648!2d52.2205036!1m5!1m1!19sChIJix7ahIHNHkcRPMe-4fOX6cg!2m2!1d21.00825!2d52.2237406!1m5!1m1!19sChIJiy1dZGnNHkcRt8AxTMoosxI!2m2!1d21.018664299999998!2d52.2253608!1m5!1m1!19sChIJzdzV9u7MHkcRzy215vwhny0!2m2!1d21.0140925!2d52.2229357!3e1?entry=gemini&utm_source=gemini&utm_campaign=gem-default"],
-    ["Leg 3 · stops 14–23", "Pan tu nie stał → Przystań → Coffeedesk → HELISA → cor. → Labuna → Dobra Materia → Tekla → ASTRA → Fat White",
+    [14, 22, "Leg 3 · the river and Muranów", "Pan tu nie stał → Przystań → Coffeedesk → HELISA → cor. → Labuna → Dobra Materia → Tekla → ASTRA → Fat White",
      "https://www.google.com/maps/dir/Pan+tu+nie+sta%C5%82,+Koszykowa+34%2F50,+Warszawa,+Polska/Przysta%C5%84+kawiarnia,+Bulwar+Flotylli+Pi%C5%84skiej+1E,+Warszawa,+Polska/Coffeedesk+Kawiarnia+-+Nowy+%C5%9Awiat,+Nowy+%C5%9Awiat+6%2F12,+Warszawa,+Polska/HELISA+COLLAGEN+CAFE,+Moliera+6,+Warszawa,+Polska/cor.+specialty+coffee,+Krakowskie+Przedmie%C5%9Bcie+62,+Warszawa,+Polska/Labuna+-+Kawa+i+Akcesoria,+P%C5%82ocka+22A,+Warszawa,+Polska/Kawiarnia+Dobra+Materia,+Nowolipki+13,+Warszawa,+Polska/Tekla+-+kawa+i+winyle,+Genera%C5%82a+W%C5%82adys%C5%82awa+Andersa+13,+Warszawa,+Poland/ASTRA+Coffeebar,+Kaliny+J%C3%B3zefa+Madali%C5%84skiego+9,+Warszawa,+Polska/Fat+White+Coffee+Bar,+Genera%C5%82a+W%C5%82adys%C5%82awa+Andersa+6%2FLU2,+Warszawa,+Poland/data=!4m62!4m61!1m5!1m1!19sChIJzdzV9u7MHkcRzy215vwhny0!2m2!1d21.0140925!2d52.2229357!1m5!1m1!19sChIJU4fXNTXNHkcROIyVRt-z7VE!2m2!1d21.049284399999998!2d52.220902699999996!1m5!1m1!19sChIJo_yUEc3NHkcRL2l-ePTw-tc!2m2!1d21.0219302!2d52.230766499999994!1m5!1m1!19sChIJSXl_6OvNHkcRspe34HwMgLA!2m2!1d21.011689!2d52.2442071!1m5!1m1!19sChIJKWK5GQDNHkcRH8VV4ITwdZI!2m2!1d21.014485!2d52.2451194!1m5!1m1!19sChIJH3kzL5vJHkcRb38JptuXzM0!2m2!1d20.9657837!2d52.2351296!1m5!1m1!19sChIJk7jD-qPNHkcRGP_7kzA7Hrc!2m2!1d20.9945272!2d52.2455959!1m5!1m1!19sChIJF5m0tE3NHkcROPtFRO6a2kA!2m2!1d20.9970057!2d52.248255699999994!1m5!1m1!19sChIJXedhIgDLHkcR7B4x0cHzVMg!2m2!1d20.966455699999997!2d52.2563445!1m5!1m1!19sChIJo3nJanrMHkcRWJfFi_wf1pM!2m2!1d20.999205999999997!2d52.250166!3e1?entry=gemini&utm_source=gemini&utm_campaign=gem-default"]
   ];
 
@@ -433,28 +452,72 @@
   }
 
   function render() {
-    var rows = STOPS.map(function (s, i) {
-      var done = !!state[i];
-      var flag = FLAGS[i] ? '<span class="flag">' + FLAGS[i] + "</span>" : "";
-      var sub = s[1] ? '<span class="sub">' + esc(s[1]) + "</span>" : "";
-      return '<tr class="' + (done ? "done" : "") + '">' +
-        '<td><input class="tick" type="checkbox" data-i="' + i + '"' + (done ? " checked" : "") +
-          ' aria-label="Mark ' + esc(s[0]) + ' as done"></td>' +
-        '<td class="stop-no">' + String(i + 1).padStart(2, "0") + "</td>" +
-        '<td><a class="name" href="' + esc(s[5]) + '" target="_blank" rel="noopener">' + esc(s[0]) + "</a>" + flag + sub + "</td>" +
-        '<td class="hours">' + esc(s[2]) + "</td>" +
-        '<td class="ride">' + esc(s[3]).replace("Start point", "<em>start</em>") + "</td>" +
-        "</tr>";
-    }).join("");
-    document.getElementById("rows").innerHTML = rows;
+    var html = "";
+    LEGS.forEach(function (leg, li) {
+      var open = !isCollapsed(li);
+      html += '<tr class="leg-head' + (open ? "" : " collapsed") + '" data-leg="' + li + '"><td colspan="5">' +
+        '<div class="leg-bar">' +
+          '<button class="leg-toggle" type="button" data-leg="' + li + '" aria-expanded="' + open + '">' +
+            '<span class="chev" aria-hidden="true">▾</span>' + esc(leg[2]) +
+            '<span class="leg-count">' + legCount(li) + "</span></button>" +
+          '<a class="open" href="' + esc(leg[4]) + '" target="_blank" rel="noopener">Cycling directions ↗</a>' +
+        "</div>" +
+        '<p class="chain">' + esc(leg[3]) + "</p></td></tr>";
 
-    document.getElementById("legs").innerHTML = LEGS.map(function (l) {
-      return '<div class="leg"><h3>' + esc(l[0]) + "</h3>" +
-        '<p class="chain">' + esc(l[1]) + "</p>" +
-        '<a class="open" href="' + esc(l[2]) + '" target="_blank" rel="noopener">Open cycling directions ↗</a></div>';
-    }).join("");
-
+      for (var i = leg[0]; i <= leg[1]; i++) {
+        var s = STOPS[i];
+        var done = !!state[i];
+        var flag = FLAGS[i] ? '<span class="flag">' + FLAGS[i] + "</span>" : "";
+        var sub = s[1] ? '<span class="sub">' + esc(s[1]) + "</span>" : "";
+        html += '<tr class="stop' + (done ? " done" : "") + '" data-leg="' + li + '"' + (open ? "" : " hidden") + ">" +
+          '<td><input class="tick" type="checkbox" data-i="' + i + '"' + (done ? " checked" : "") +
+            ' aria-label="Mark ' + esc(s[0]) + ' as done"></td>' +
+          '<td class="stop-no">' + String(i + 1).padStart(2, "0") + "</td>" +
+          '<td><a class="name" href="' + esc(s[5]) + '" target="_blank" rel="noopener">' + esc(s[0]) + "</a>" + flag + sub + "</td>" +
+          '<td class="hours">' + esc(s[2]) + "</td>" +
+          '<td class="ride">' + esc(s[3]).replace("Start point", "<em>start</em>") + "</td>" +
+          "</tr>";
+      }
+    });
+    document.getElementById("rows").innerHTML = html;
     updateTotals();
+  }
+
+  function legOf(i) {
+    for (var li = 0; li < LEGS.length; li++) {
+      if (i >= LEGS[li][0] && i <= LEGS[li][1]) { return li; }
+    }
+    return 0;
+  }
+
+  function legCount(li) {
+    var leg = LEGS[li], done = 0;
+    for (var i = leg[0]; i <= leg[1]; i++) { if (state[i]) { done++; } }
+    return done + "/" + (leg[1] - leg[0] + 1);
+  }
+
+  function legFinished(li) {
+    var leg = LEGS[li];
+    for (var i = leg[0]; i <= leg[1]; i++) { if (!state[i]) { return false; } }
+    return true;
+  }
+
+  // A leg folds itself away once its last stop is ticked; opening or closing one
+  // by hand overrides that until the next tick in it, which is the moment the
+  // finished state changed and the override stopped describing anything.
+  var overrides = {};
+  function isCollapsed(li) {
+    return li in overrides ? overrides[li] : legFinished(li);
+  }
+
+  function applyLeg(li) {
+    var open = !isCollapsed(li);
+    var head = document.querySelector('.leg-head[data-leg="' + li + '"]');
+    head.classList.toggle("collapsed", !open);
+    head.querySelector(".leg-toggle").setAttribute("aria-expanded", String(open));
+    head.querySelector(".leg-count").textContent = legCount(li);
+    var rows = document.querySelectorAll('tr.stop[data-leg="' + li + '"]');
+    for (var i = 0; i < rows.length; i++) { rows[i].hidden = !open; }
   }
 
   function updateTotals() {
@@ -477,12 +540,24 @@
     var i = Number(box.dataset.i);
     if (box.checked) { state[i] = true; } else { delete state[i]; }
     box.closest("tr").classList.toggle("done", box.checked);
+    var li = legOf(i);
+    delete overrides[li];
+    applyLeg(li);
     updateTotals();
     save();
   });
 
+  document.getElementById("rows").addEventListener("click", function (e) {
+    var btn = e.target.closest(".leg-toggle");
+    if (!btn) return;
+    var li = Number(btn.dataset.leg);
+    overrides[li] = !isCollapsed(li);
+    applyLeg(li);
+  });
+
   document.getElementById("reset").addEventListener("click", function () {
     state = {};
+    overrides = {};
     render();
     save();
   });
