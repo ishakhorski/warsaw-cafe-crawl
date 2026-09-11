@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A 23-stop Saturday coffee and bakery ride across Warsaw, with opening hours, ride times and a tick box for each stop.">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { color-scheme: light dark; }
+  body { margin: 0; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+<title>Saturday Café Crawl</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --ground: #f2f1ec;
+    --panel: #fbfaf7;
+    --ink: #171c1b;
+    --ink-soft: #565f5c;
+    --ink-faint: #8b928e;
+    --rule: #ddded6;
+    --accent: #0f6a62;
+    --accent-soft: #dcebe7;
+    --flag: #a8421f;
+    --done-ink: #9aa19d;
+    --shadow: 0 1px 0 rgba(23, 28, 27, .05);
+  }
+  :root:not([data-theme="light"]) {
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #141817;
+      --panel: #1b201f;
+      --ink: #eceee9;
+      --ink-soft: #a3aca8;
+      --ink-faint: #767f7b;
+      --rule: #2c3331;
+      --accent: #5fc9b8;
+      --accent-soft: #1f3330;
+      --flag: #e08a63;
+      --done-ink: #626a67;
+      --shadow: none;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #141817;
+    --panel: #1b201f;
+    --ink: #eceee9;
+    --ink-soft: #a3aca8;
+    --ink-faint: #767f7b;
+    --rule: #2c3331;
+    --accent: #5fc9b8;
+    --accent-soft: #1f3330;
+    --flag: #e08a63;
+    --done-ink: #626a67;
+    --shadow: none;
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Newsreader", Georgia, "Times New Roman", serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 62rem;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.25rem;
+  }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .72rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  h1 {
+    font-family: "Oswald", "Arial Narrow", sans-serif;
+    font-weight: 600;
+    font-size: clamp(2.4rem, 8vw, 3.6rem);
+    line-height: .98;
+    letter-spacing: .005em;
+    text-transform: uppercase;
+    text-wrap: balance;
+    margin: .35rem 0 0;
+  }
+  h2 {
+    font-family: "Oswald", "Arial Narrow", sans-serif;
+    font-weight: 500;
+    font-size: 1.45rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    margin: 0;
+  }
+  .lede {
+    max-width: 34em;
+    color: var(--ink-soft);
+    margin: .75rem 0 0;
+  }
+
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 2.25rem;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 2px solid var(--ink);
+  }
+  .fact {
+    display: flex;
+    flex-direction: column;
+    gap: .1rem;
+  }
+  .fact b {
+    font-family: "Oswald", "Arial Narrow", sans-serif;
+    font-weight: 500;
+    font-size: 1.6rem;
+    letter-spacing: .02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .fact span {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .68rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .progress {
+    display: flex;
+    align-items: center;
+    gap: .9rem;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .8rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-soft);
+  }
+  .bar {
+    flex: 1;
+    height: 6px;
+    background: var(--rule);
+    overflow: hidden;
+  }
+  .bar i {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--accent);
+    transition: width .35s ease;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bar i { transition: none; }
+  }
+
+  section { display: flex; flex-direction: column; gap: 1rem; }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: .6rem;
+  }
+
+  .table-scroll { overflow-x: auto; }
+  table {
+    width: 100%;
+    min-width: 40rem;
+    border-collapse: collapse;
+  }
+  thead th {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-weight: 500;
+    font-size: .66rem;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-align: left;
+    padding: 0 .75rem .5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  thead th:first-child { padding-left: 0; width: 2.6rem; }
+  thead th.num { text-align: right; }
+  tbody td {
+    padding: .8rem .75rem;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: baseline;
+  }
+  tbody td:first-child { padding-left: 0; }
+  tbody tr:hover { background: var(--panel); }
+
+  .tick {
+    width: 1.15rem;
+    height: 1.15rem;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .stop-no {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .78rem;
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+  }
+  .name {
+    font-size: 1.05rem;
+    color: var(--ink);
+    text-decoration: none;
+    background-image: linear-gradient(var(--accent), var(--accent));
+    background-size: 100% 1px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+  }
+  .name:hover { color: var(--accent); }
+  .name:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .sub {
+    display: block;
+    font-size: .8rem;
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+  .hours, .ride {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .82rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .ride { text-align: right; }
+  .ride em { font-style: normal; color: var(--ink-faint); }
+  .flag {
+    display: inline-block;
+    margin-left: .4rem;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .62rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--flag);
+    border: 1px solid currentColor;
+    padding: 0 .25rem;
+    white-space: nowrap;
+  }
+  tr.done td { color: var(--done-ink); }
+  tr.done .name {
+    color: var(--done-ink);
+    text-decoration: line-through;
+    background-image: none;
+  }
+  tr.done .hours, tr.done .ride, tr.done .sub, tr.done .stop-no { color: var(--done-ink); }
+
+  .legs { display: grid; gap: .9rem; }
+  .leg {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--accent);
+    padding: 1rem 1.15rem;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: .45rem;
+  }
+  .leg h3 {
+    margin: 0;
+    font-family: "Oswald", "Arial Narrow", sans-serif;
+    font-weight: 500;
+    font-size: 1.05rem;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+  .leg .chain {
+    font-size: .92rem;
+    color: var(--ink-soft);
+  }
+  .leg .open {
+    align-self: flex-start;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .7rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 1px;
+  }
+  .leg .open:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  footer {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: .7rem;
+    letter-spacing: .06em;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--rule);
+    padding-top: 1rem;
+  }
+  .reset {
+    font: inherit;
+    color: var(--ink-faint);
+    background: none;
+    border: 1px solid var(--rule);
+    padding: .3rem .6rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+  }
+  .reset:hover { color: var(--ink); border-color: var(--ink-faint); }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Warszawa · Saturday · by bike</p>
+    <h1>Twenty-three coffees<br>and a bicycle</h1>
+    <p class="lede">Praga to Muranów, east bank to west, in the order the ride actually runs. Tick a stop when you have had the coffee. The clock beside each name is Saturday opening only.</p>
+    <div class="facts">
+      <div class="fact"><b>23</b><span>stops</span></div>
+      <div class="fact"><b>39.8 km</b><span>total ride</span></div>
+      <div class="fact"><b>1 h 47</b><span>in the saddle</span></div>
+      <div class="fact"><b>14:00</b><span>earliest closing</span></div>
+    </div>
+  </header>
+
+  <div class="progress">
+    <span id="count">0 of 23</span>
+    <span class="bar"><i id="fill"></i></span>
+    <span id="left">39.8 km to ride</span>
+  </div>
+
+  <section>
+    <div class="section-head">
+      <h2>The stops</h2>
+      <span class="eyebrow">in riding order</span>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th><span class="eyebrow">✓</span></th>
+            <th>#</th>
+            <th>Place</th>
+            <th>Saturday</th>
+            <th class="num">Ride from previous</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>The route, in three legs</h2>
+      <span class="eyebrow">cycling directions</span>
+    </div>
+    <div class="legs" id="legs"></div>
+  </section>
+
+  <footer>
+    <p id="status">Ticks are remembered in this browser.</p>
+    <p><button class="reset" id="reset" type="button">Clear all ticks</button></p>
+  </footer>
+</div>
+
+<script>
+  var STOPS = [
+    ["Coffee Kamionkowska", "kawa speciality, piekarnia rzemieślnicza, śniadania", "8:00 – 20:00", "Start point", 0, "https://www.google.com/maps/dir/?api=1&destination=Coffee+Kamionkowska+I+Kawa+speciality+I+Wino+I+Piekarnia+rzemie%C5%9Blnicza+I+%C5%9Aniadania+I+Cukiernia+I+Wypieki+domowe+I+Lunch+I+Warszawa"],
+    ["No i Co", "", "9:00 – 20:00", "~1 min · 0.2 km", 0.2, "https://www.google.com/maps/dir/?api=1&destination=No+i+Co+Warszawa"],
+    ["ROST microroastery & café", "", "9:00 – 19:00", "~4 min · 1.7 km", 1.7, "https://www.google.com/maps/dir/?api=1&destination=ROST+microroastery+caf%C3%A9+Warszawa"],
+    ["Domo Bake.ry", "", "9:00 – 18:00", "~3 min · 0.8 km", 0.8, "https://www.google.com/maps/dir/?api=1&destination=Domo+Bake.ry+Warszawa"],
+    ["MUAS COFFEE", "", "10:00 – 18:00", "~20 min · 6.4 km", 6.4, "https://www.google.com/maps/dir/?api=1&destination=MUAS+COFFEE+Warszawa"],
+    ["Pies Cafe", "", "10:00 – 17:30", "~1 min · 0.3 km", 0.3, "https://www.google.com/maps/dir/?api=1&destination=Pies+Cafe+Warszawa"],
+    ["BOZO", "", "9:00 – 19:00", "~3 min · 1.5 km", 1.5, "https://www.google.com/maps/dir/?api=1&destination=BOZO+Warszawa"],
+    ["Cukiernia Kostki", "", "10:00 – 18:00", "~4 min · 2.4 km", 2.4, "https://www.google.com/maps/dir/?api=1&destination=Cukiernia+Kostki+Warszawa"],
+    ["Filtry Cafe", "", "9:00 – 20:00", "~7 min · 2.4 km", 2.4, "https://www.google.com/maps/dir/?api=1&destination=Filtry+Cafe+Warszawa"],
+    ["Błogo. Pracownia Cukiernicza", "", "hours unknown", "~2 min · 0.9 km", 0.9, "https://www.google.com/maps/dir/?api=1&destination=B%C5%82ogo.+Pracownia+Cukiernicza+Warszawa"],
+    ["Cafe Central", "", "10:00 – 17:00", "~4 min · 1.7 km", 1.7, "https://www.google.com/maps/dir/?api=1&destination=Cafe+Central+Warszawa"],
+    ["El Cafetero Kawiarnia", "Emilii Plater", "9:00 – 19:00", "~2 min · 0.7 km", 0.7, "https://www.google.com/maps/dir/?api=1&destination=El+Cafetero+Kawiarnia+-+Emilii+Plater+Warszawa"],
+    ["Relax na Wilczej", "", "9:00 – 21:00", "~2 min · 0.9 km", 0.9, "https://www.google.com/maps/dir/?api=1&destination=Relax+na+Wilczej+Warszawa"],
+    ["Pan tu nie stał", "", "11:00 – 19:00", "~1 min · 0.4 km", 0.4, "https://www.google.com/maps/dir/?api=1&destination=Pan+tu+nie+sta%C5%82+Warszawa"],
+    ["Przystań kawiarnia", "", "9:00 – 20:00", "~11 min · 3.9 km", 3.9, "https://www.google.com/maps/dir/?api=1&destination=Przysta%C5%84+kawiarnia+Warszawa"],
+    ["Coffeedesk Kawiarnia", "Nowy Świat", "9:00 – 22:00", "~5 min · 1.5 km", 1.5, "https://www.google.com/maps/dir/?api=1&destination=Coffeedesk+Kawiarnia+-+Nowy+%C5%9Awiat+Warszawa"],
+    ["HELISA COLLAGEN CAFE", "", "8:30 – 18:00", "~4 min · 1.3 km", 1.3, "https://www.google.com/maps/dir/?api=1&destination=HELISA+COLLAGEN+CAFE+Warszawa"],
+    ["cor. specialty coffee", "", "9:00 – 20:00", "~1 min · 0.4 km", 0.4, "https://www.google.com/maps/dir/?api=1&destination=cor.+specialty+coffee+Warszawa"],
+    ["Labuna – Kawa i Akcesoria", "", "10:00 – 14:00", "~13 min · 4.2 km", 4.2, "https://www.google.com/maps/dir/?api=1&destination=Labuna+-+Kawa+i+Akcesoria+Warszawa"],
+    ["Kawiarnia Dobra Materia", "", "10:00 – 18:00", "~3 min · 2.4 km", 2.4, "https://www.google.com/maps/dir/?api=1&destination=Kawiarnia+Dobra+Materia+Warszawa"],
+    ["Tekla – kawa i winyle", "", "10:00 – 19:00", "~1 min · 0.3 km", 0.3, "https://www.google.com/maps/dir/?api=1&destination=Tekla+-+kawa+i+winyle+Warszawa"],
+    ["ASTRA Coffeebar", "", "8:30 – 19:00", "~4 min · 2.7 km", 2.7, "https://www.google.com/maps/dir/?api=1&destination=ASTRA+Coffeebar+Warszawa"],
+    ["Fat White Coffee Bar", "final stop", "8:00 – 16:55", "~11 min · 2.8 km", 2.8, "https://www.google.com/maps/dir/?api=1&destination=Fat+White+Coffee+Bar+Warszawa"]
+  ];
+
+  // Only the stops that can shut the ride down get a flag; a 19:00 close cannot.
+  var FLAGS = { 18: "closes 14:00", 22: "closes 16:55", 10: "closes 17:00", 5: "closes 17:30", 9: "call ahead" };
+
+  var LEGS = [
+    ["Leg 1 · stops 1–5", "Coffee Kamionkowska → No i Co → ROST → Domo Bake.ry → MUAS COFFEE",
+     "https://www.google.com/maps/dir/Coffee+Kamionkowska+I+Kawa+speciality+I+Wino+I+Piekarnia+rzemie%C5%9Blnicza+I+%C5%9Aniadania+I+Cukiernia+I+Wypieki+domowe+I+Lunch+I,+Kamionkowska+9%2FU3,+Warszawa,+Polska/No+i+Co,+Kamionkowska+19%2FU2,+Warszawa,+Poland/ROST+microroastery+%26+caf%C3%A9,+Kobielska+55,+Warszawa,+Polska/Domo+Bake.ry,+Mi%C4%99dzyborska+57%2F65,+Warszawa,+Polska/MUAS+COFFEE,+Dolna+30A,+Warszawa,+Polska/data=!4m32!4m31!1m5!1m1!19sChIJb7W-RgXNHkcRCRuaUFViE5U!2m2!1d21.0616272!2d52.247735399999996!1m5!1m1!19sChIJuW8JyrXNHkcRlfIjwRgMQCU!2m2!1d21.0632475!2d52.247651999999995!1m5!1m1!19sChIJ9ZOrZlnNHkcR3ED4GGR65EU!2m2!1d21.082909!2d52.247242!1m5!1m1!19sChIJ4ZsG5HXNHkcR1CxDvBdqWxI!2m2!1d21.0793051!2d52.2394256!1m5!1m1!19sChIJ69kyex3NHkcRDiZTC35u1GA!2m2!1d21.0286379!2d52.2004564!3e1?entry=gemini&utm_source=gemini&utm_campaign=gem-default"],
+    ["Leg 2 · stops 5–14", "MUAS COFFEE → Pies Cafe → BOZO → Cukiernia Kostki → Filtry Cafe → Błogo → Cafe Central → El Cafetero → Relax na Wilczej → Pan tu nie stał",
+     "https://www.google.com/maps/dir/MUAS+COFFEE,+Dolna+30A,+Warszawa,+Polska/Pies+Cafe,+Konduktorska+14%2FU1,+Warszawa,+Poland/BOZO,+Jurija+Gagarina+8,+Warszawa,+Poland/Cukiernia+Kostki,+Antoniego+J%C3%B3zefa+Madali%C5%84skiego+35%2F19,+Warszawa,+Polska/Filtry+Cafe,+Juliana+Ursyna+Niemcewicza+3,+Warszawa,+Poland/B%C5%82ogo.+Pracownia+Cukiernicza,+Andrzejowska+9,+Warszawa,+Polska/Cafe+Central,+Lwowska+2A,+Warszawa,+Poland/El+Cafetero+Kawiarnia+-+Emilii+Plater,+Emilii+Plater+8,+Warszawa,+Polska/Relax+na+Wilczej,+Wilcza+17,+Warszawa,+Polska/Pan+tu+nie+sta%C5%82,+Koszykowa+34%2F50,+Warszawa,+Polska/data=!4m62!4m61!1m5!1m1!19sChIJ69kyex3NHkcRDiZTC35u1GA!2m2!1d21.0286379!2d52.2004564!1m5!1m1!19sChIJP4YK3XXNHkcR2HqnVb7SYPg!2m2!1d21.0292466!2d52.2014651!1m5!1m1!19sChIJv_iqQr3NHkcRvjlgjzU06aw!2m2!1d21.045846299999997!2d52.2071152!1m5!1m1!19sChIJTdNWbgDNHkcRJSTA2wMTD0E!2m2!1d21.015397999999998!2d52.2041475!1m5!1m1!19sChIJOeCiO5bMHkcRr322Y6Dx2w0!2m2!1d20.9885493!2d52.2204761!1m5!1m1!19sChIJ97Cr6T7NHkcR84PttUXDCSI!2m2!1d20.9812519!2d52.2214947!1m5!1m1!19sChIJqfj8l_HNHkcR9ySVbhm6uQI!2m2!1d21.0123648!2d52.2205036!1m5!1m1!19sChIJix7ahIHNHkcRPMe-4fOX6cg!2m2!1d21.00825!2d52.2237406!1m5!1m1!19sChIJiy1dZGnNHkcRt8AxTMoosxI!2m2!1d21.018664299999998!2d52.2253608!1m5!1m1!19sChIJzdzV9u7MHkcRzy215vwhny0!2m2!1d21.0140925!2d52.2229357!3e1?entry=gemini&utm_source=gemini&utm_campaign=gem-default"],
+    ["Leg 3 · stops 14–23", "Pan tu nie stał → Przystań → Coffeedesk → HELISA → cor. → Labuna → Dobra Materia → Tekla → ASTRA → Fat White",
+     "https://www.google.com/maps/dir/Pan+tu+nie+sta%C5%82,+Koszykowa+34%2F50,+Warszawa,+Polska/Przysta%C5%84+kawiarnia,+Bulwar+Flotylli+Pi%C5%84skiej+1E,+Warszawa,+Polska/Coffeedesk+Kawiarnia+-+Nowy+%C5%9Awiat,+Nowy+%C5%9Awiat+6%2F12,+Warszawa,+Polska/HELISA+COLLAGEN+CAFE,+Moliera+6,+Warszawa,+Polska/cor.+specialty+coffee,+Krakowskie+Przedmie%C5%9Bcie+62,+Warszawa,+Polska/Labuna+-+Kawa+i+Akcesoria,+P%C5%82ocka+22A,+Warszawa,+Polska/Kawiarnia+Dobra+Materia,+Nowolipki+13,+Warszawa,+Polska/Tekla+-+kawa+i+winyle,+Genera%C5%82a+W%C5%82adys%C5%82awa+Andersa+13,+Warszawa,+Poland/ASTRA+Coffeebar,+Kaliny+J%C3%B3zefa+Madali%C5%84skiego+9,+Warszawa,+Polska/Fat+White+Coffee+Bar,+Genera%C5%82a+W%C5%82adys%C5%82awa+Andersa+6%2FLU2,+Warszawa,+Poland/data=!4m62!4m61!1m5!1m1!19sChIJzdzV9u7MHkcRzy215vwhny0!2m2!1d21.0140925!2d52.2229357!1m5!1m1!19sChIJU4fXNTXNHkcROIyVRt-z7VE!2m2!1d21.049284399999998!2d52.220902699999996!1m5!1m1!19sChIJo_yUEc3NHkcRL2l-ePTw-tc!2m2!1d21.0219302!2d52.230766499999994!1m5!1m1!19sChIJSXl_6OvNHkcRspe34HwMgLA!2m2!1d21.011689!2d52.2442071!1m5!1m1!19sChIJKWK5GQDNHkcRH8VV4ITwdZI!2m2!1d21.014485!2d52.2451194!1m5!1m1!19sChIJH3kzL5vJHkcRb38JptuXzM0!2m2!1d20.9657837!2d52.2351296!1m5!1m1!19sChIJk7jD-qPNHkcRGP_7kzA7Hrc!2m2!1d20.9945272!2d52.2455959!1m5!1m1!19sChIJF5m0tE3NHkcROPtFRO6a2kA!2m2!1d20.9970057!2d52.248255699999994!1m5!1m1!19sChIJXedhIgDLHkcR7B4x0cHzVMg!2m2!1d20.966455699999997!2d52.2563445!1m5!1m1!19sChIJo3nJanrMHkcRWJfFi_wf1pM!2m2!1d20.999205999999997!2d52.250166!3e1?entry=gemini&utm_source=gemini&utm_campaign=gem-default"]
+  ];
+
+  var STORE_KEY = "warsaw-cafe-crawl-done";
+  var state = readState();
+
+  function readState() {
+    var saved = [];
+    try {
+      var local = window.localStorage.getItem(STORE_KEY);
+      if (local) { saved = JSON.parse(local) || []; }
+    } catch (e) { /* blocked storage: start the ride with nothing ticked */ }
+    var set = {};
+    saved.forEach(function (i) { set[i] = true; });
+    return set;
+  }
+
+  function esc(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function render() {
+    var rows = STOPS.map(function (s, i) {
+      var done = !!state[i];
+      var flag = FLAGS[i] ? '<span class="flag">' + FLAGS[i] + "</span>" : "";
+      var sub = s[1] ? '<span class="sub">' + esc(s[1]) + "</span>" : "";
+      return '<tr class="' + (done ? "done" : "") + '">' +
+        '<td><input class="tick" type="checkbox" data-i="' + i + '"' + (done ? " checked" : "") +
+          ' aria-label="Mark ' + esc(s[0]) + ' as done"></td>' +
+        '<td class="stop-no">' + String(i + 1).padStart(2, "0") + "</td>" +
+        '<td><a class="name" href="' + esc(s[5]) + '" target="_blank" rel="noopener">' + esc(s[0]) + "</a>" + flag + sub + "</td>" +
+        '<td class="hours">' + esc(s[2]) + "</td>" +
+        '<td class="ride">' + esc(s[3]).replace("Start point", "<em>start</em>") + "</td>" +
+        "</tr>";
+    }).join("");
+    document.getElementById("rows").innerHTML = rows;
+
+    document.getElementById("legs").innerHTML = LEGS.map(function (l) {
+      return '<div class="leg"><h3>' + esc(l[0]) + "</h3>" +
+        '<p class="chain">' + esc(l[1]) + "</p>" +
+        '<a class="open" href="' + esc(l[2]) + '" target="_blank" rel="noopener">Open cycling directions ↗</a></div>';
+    }).join("");
+
+    updateTotals();
+  }
+
+  function updateTotals() {
+    var done = 0, ridden = 0, total = 0;
+    STOPS.forEach(function (s, i) {
+      total += s[4];
+      if (state[i]) { done++; ridden += s[4]; }
+    });
+    document.getElementById("count").textContent = done + " of " + STOPS.length;
+    document.getElementById("fill").style.width = (done / STOPS.length * 100) + "%";
+    var left = Math.max(0, total - ridden);
+    document.getElementById("left").textContent = done === STOPS.length
+      ? "route complete"
+      : left.toFixed(1) + " km to ride";
+  }
+
+  document.getElementById("rows").addEventListener("change", function (e) {
+    var box = e.target.closest(".tick");
+    if (!box) return;
+    var i = Number(box.dataset.i);
+    if (box.checked) { state[i] = true; } else { delete state[i]; }
+    box.closest("tr").classList.toggle("done", box.checked);
+    updateTotals();
+    save();
+  });
+
+  document.getElementById("reset").addEventListener("click", function () {
+    state = {};
+    render();
+    save();
+  });
+
+  function doneList() {
+    return Object.keys(state).map(Number).sort(function (a, b) { return a - b; });
+  }
+
+  function save() {
+    // Per-device only: the page is static, so the tick list lives in this browser.
+    try { window.localStorage.setItem(STORE_KEY, JSON.stringify(doneList())); } catch (e) { /* private window: ticks last the session */ }
+  }
+
+  render();
+</script>
+</body>
+</html>
