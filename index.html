@@ -3,62 +3,57 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="A 23-stop Saturday coffee and bakery ride across Warsaw, with opening hours, ride times and a tick box for each stop.">
-<style>
-  *, *::before, *::after { box-sizing: border-box; }
-  html { color-scheme: light dark; }
-  body { margin: 0; }
-  img { max-width: 100%; }
-  [hidden] { display: none !important; }
-</style>
 <title>Saturday Café Crawl</title>
+<meta name="description" content="A 23-stop Saturday coffee and bakery ride across Warsaw, with addresses, opening hours, ride times and a tick box for each stop.">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+
+  /* Every text colour below is checked against the surface it sits on: body
+     text at 4.5:1 or better, the mono captions included, in both themes. */
   :root {
     --ground: #f2f1ec;
-    --panel: #fbfaf7;
-    --ink: #171c1b;
-    --ink-soft: #565f5c;
-    --ink-faint: #8b928e;
-    --rule: #ddded6;
-    --accent: #0f6a62;
-    --accent-soft: #dcebe7;
-    --flag: #a8421f;
-    --done-ink: #9aa19d;
-    --shadow: 0 1px 0 rgba(23, 28, 27, .05);
-  }
-  :root:not([data-theme="light"]) {
+    --panel: #e9e8e1;
+    --ink: #151918;
+    --ink-soft: #4a5350;
+    --ink-faint: #5f6864;
+    --rule: #d5d6ce;
+    --rule-strong: #b6b8ae;
+    --accent: #0d5f58;
+    --flag: #96371a;
+    --done-ink: #626965;
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --ground: #141817;
-      --panel: #1b201f;
-      --ink: #eceee9;
-      --ink-soft: #a3aca8;
-      --ink-faint: #767f7b;
-      --rule: #2c3331;
-      --accent: #5fc9b8;
-      --accent-soft: #1f3330;
-      --flag: #e08a63;
-      --done-ink: #626a67;
-      --shadow: none;
+      --ground: #131716;
+      --panel: #1c211f;
+      --ink: #eef0eb;
+      --ink-soft: #b3bcb7;
+      --ink-faint: #97a09b;
+      --rule: #2b3230;
+      --rule-strong: #3d4644;
+      --accent: #6fd3c1;
+      --flag: #f0a17a;
+      --done-ink: #848c87;
       color-scheme: dark;
     }
   }
   :root[data-theme="dark"] {
-    --ground: #141817;
-    --panel: #1b201f;
-    --ink: #eceee9;
-    --ink-soft: #a3aca8;
-    --ink-faint: #767f7b;
-    --rule: #2c3331;
-    --accent: #5fc9b8;
-    --accent-soft: #1f3330;
-    --flag: #e08a63;
-    --done-ink: #626a67;
-    --shadow: none;
+    --ground: #131716;
+    --panel: #1c211f;
+    --ink: #eef0eb;
+    --ink-soft: #b3bcb7;
+    --ink-faint: #97a09b;
+    --rule: #2b3230;
+    --rule-strong: #3d4644;
+    --accent: #6fd3c1;
+    --flag: #f0a17a;
+    --done-ink: #848c87;
     color-scheme: dark;
   }
 
@@ -73,10 +68,10 @@
   .wrap {
     max-width: 62rem;
     margin: 0 auto;
-    padding: 2.5rem 1.25rem 5rem;
+    padding: 2.5rem 1.25rem 4rem;
     display: flex;
     flex-direction: column;
-    gap: 2.25rem;
+    gap: 2rem;
   }
 
   .eyebrow {
@@ -89,17 +84,16 @@
   h1 {
     font-family: "Oswald", "Arial Narrow", sans-serif;
     font-weight: 600;
-    font-size: clamp(2.4rem, 8vw, 3.6rem);
+    font-size: clamp(2.3rem, 9vw, 3.6rem);
     line-height: .98;
-    letter-spacing: .005em;
     text-transform: uppercase;
     text-wrap: balance;
-    margin: .35rem 0 0;
+    margin: .4rem 0 0;
   }
   h2 {
     font-family: "Oswald", "Arial Narrow", sans-serif;
     font-weight: 500;
-    font-size: 1.45rem;
+    font-size: 1.4rem;
     letter-spacing: .04em;
     text-transform: uppercase;
     margin: 0;
@@ -108,20 +102,16 @@
   .facts {
     display: flex;
     flex-wrap: wrap;
-    gap: 0 2.25rem;
-    margin-top: 1.5rem;
-    padding-top: 1.25rem;
+    gap: .9rem 2.25rem;
+    margin-top: 1.4rem;
+    padding-top: 1.2rem;
     border-top: 2px solid var(--ink);
   }
-  .fact {
-    display: flex;
-    flex-direction: column;
-    gap: .1rem;
-  }
+  .fact { display: flex; flex-direction: column; gap: .1rem; }
   .fact b {
     font-family: "Oswald", "Arial Narrow", sans-serif;
     font-weight: 500;
-    font-size: 1.6rem;
+    font-size: 1.55rem;
     letter-spacing: .02em;
     font-variant-numeric: tabular-nums;
   }
@@ -133,19 +123,25 @@
     color: var(--ink-faint);
   }
 
+  /* The bike rides the bar: it sits at the same percentage as the fill, and its
+     wheels turn only while it is actually moving between two stops. */
   .progress {
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: end;
     gap: .9rem;
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: .8rem;
+    font-size: .78rem;
     font-variant-numeric: tabular-nums;
     color: var(--ink-soft);
   }
+  .progress .cap { padding-bottom: .1rem; white-space: nowrap; }
+  .progress .cap.right { text-align: right; }
+  .track { position: relative; margin: 0 1.4rem; }
   .bar {
-    flex: 1;
     height: 6px;
     background: var(--rule);
+    border-radius: 3px;
     overflow: hidden;
   }
   .bar i {
@@ -153,11 +149,21 @@
     height: 100%;
     width: 0;
     background: var(--accent);
-    transition: width .35s ease;
+    transition: width .7s cubic-bezier(.32, .72, .35, 1);
   }
-  @media (prefers-reduced-motion: reduce) {
-    .bar i { transition: none; }
+  .rider {
+    position: absolute;
+    bottom: 3px;
+    left: 0;
+    width: 2.6rem;
+    margin-left: -1.3rem;
+    color: var(--accent);
+    transition: left .7s cubic-bezier(.32, .72, .35, 1);
   }
+  .rider svg { display: block; width: 100%; height: auto; }
+  .rider .wheel { transform-box: fill-box; transform-origin: center; }
+  .progress.rolling .wheel { animation: roll .5s linear infinite; }
+  @keyframes roll { to { transform: rotate(360deg); } }
 
   section { display: flex; flex-direction: column; gap: 1rem; }
   .section-head {
@@ -165,16 +171,11 @@
     align-items: baseline;
     justify-content: space-between;
     gap: 1rem;
-    border-bottom: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule-strong);
     padding-bottom: .6rem;
   }
 
-  .table-scroll { overflow-x: auto; }
-  table {
-    width: 100%;
-    min-width: 40rem;
-    border-collapse: collapse;
-  }
+  table { width: 100%; border-collapse: collapse; }
   thead th {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
     font-weight: 500;
@@ -186,22 +187,61 @@
     padding: 0 .75rem .5rem;
     border-bottom: 1px solid var(--rule);
   }
-  thead th:first-child { padding-left: 0; width: 2.6rem; }
+  thead th:first-child { padding-left: 0; width: 2.4rem; }
   thead th.num { text-align: right; }
-  tbody td {
-    padding: .8rem .75rem;
+
+  /* Folding a leg animates the rows' own height: each cell's content sits in a
+     0fr/1fr grid, which is the one way a table row can be given a transition. */
+  tr.stop td {
+    padding: .75rem;
     border-bottom: 1px solid var(--rule);
     vertical-align: baseline;
+    transition: padding .32s cubic-bezier(.22, .61, .36, 1);
   }
-  tbody td:first-child { padding-left: 0; }
-  tbody tr:hover { background: var(--panel); }
+  tr.stop td:first-child { padding-left: 0; }
+  tr.stop .cell {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows .32s cubic-bezier(.22, .61, .36, 1), opacity .22s ease;
+  }
+  tr.stop .cell > div { min-height: 0; overflow: hidden; }
+  tr.stop:hover td { background: var(--panel); }
+  tr.stop.folded { visibility: hidden; transition: visibility 0s linear .32s; }
+  tr.stop.folded td {
+    padding-top: 0;
+    padding-bottom: 0;
+    border-bottom-color: transparent;
+  }
+  tr.stop.folded .cell { grid-template-rows: 0fr; opacity: 0; }
 
   .tick {
-    width: 1.15rem;
-    height: 1.15rem;
-    accent-color: var(--accent);
+    appearance: none;
+    -webkit-appearance: none;
+    position: relative;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+    border: 1.5px solid var(--rule-strong);
+    border-radius: 50%;
+    background: transparent;
     cursor: pointer;
+    transition: background .18s ease, border-color .18s ease;
   }
+  .tick:hover { border-color: var(--accent); }
+  .tick:checked { background: var(--accent); border-color: var(--accent); }
+  .tick:checked::after {
+    content: "";
+    position: absolute;
+    left: .41rem;
+    top: .17rem;
+    width: .26rem;
+    height: .52rem;
+    border: solid var(--ground);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  .tick:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
   .stop-no {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
     font-size: .78rem;
@@ -218,20 +258,17 @@
     background-position: 0 100%;
   }
   .name:hover { color: var(--accent); }
-  .name:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-  }
+  .name:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   .sub {
     display: block;
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: .74rem;
-    letter-spacing: .01em;
+    font-size: .73rem;
     color: var(--ink-faint);
+    margin-top: .15rem;
   }
   .hours, .ride {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: .82rem;
+    font-size: .8rem;
     font-variant-numeric: tabular-nums;
     color: var(--ink-soft);
     white-space: nowrap;
@@ -247,10 +284,10 @@
     text-transform: uppercase;
     color: var(--flag);
     border: 1px solid currentColor;
+    border-radius: 2px;
     padding: 0 .25rem;
     white-space: nowrap;
   }
-  tr.done td { color: var(--done-ink); }
   tr.done .name {
     color: var(--done-ink);
     text-decoration: line-through;
@@ -265,17 +302,11 @@
     padding: .85rem 1rem .8rem;
   }
   tr.leg-head:first-child td { border-top: none; }
-  .leg-bar {
-    display: flex;
-    align-items: baseline;
-    gap: .7rem;
-    flex-wrap: wrap;
-  }
+  .leg-bar { display: flex; align-items: baseline; gap: .7rem; flex-wrap: wrap; }
   .leg-toggle {
     display: inline-flex;
     align-items: baseline;
     gap: .55rem;
-    font: inherit;
     font-family: "Oswald", "Arial Narrow", sans-serif;
     font-weight: 500;
     font-size: 1.02rem;
@@ -286,6 +317,7 @@
     border: 0;
     padding: 0;
     cursor: pointer;
+    text-align: left;
   }
   .leg-toggle:hover { color: var(--accent); }
   .leg-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
@@ -293,12 +325,9 @@
     display: inline-block;
     font-size: .7em;
     color: var(--accent);
-    transition: transform .2s ease;
+    transition: transform .28s cubic-bezier(.22, .61, .36, 1);
   }
   tr.leg-head.collapsed .chev { transform: rotate(-90deg); }
-  @media (prefers-reduced-motion: reduce) {
-    .chev { transition: none; }
-  }
   .leg-count {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
     font-size: .68rem;
@@ -323,6 +352,7 @@
   .chain {
     margin: .35rem 0 0;
     font-size: .88rem;
+    line-height: 1.45;
     color: var(--ink-soft);
     max-width: 56em;
   }
@@ -334,20 +364,65 @@
     color: var(--ink-faint);
     border-top: 1px solid var(--rule);
     padding-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
+  footer p { margin: 0; }
   .reset {
     font: inherit;
-    color: var(--ink-faint);
+    color: var(--ink-soft);
     background: none;
-    border: 1px solid var(--rule);
-    padding: .3rem .6rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: 2px;
+    padding: .4rem .7rem;
     cursor: pointer;
     text-transform: uppercase;
     letter-spacing: .1em;
   }
   .reset:hover { color: var(--ink); border-color: var(--ink-faint); }
-</style>
+  .reset:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
+  /* Phones: the table stops being a table. Each stop becomes a small block, so
+     nothing ever scrolls sideways. */
+  @media (max-width: 46rem) {
+    .wrap { padding: 2rem 1rem 3rem; gap: 1.6rem; }
+    table, tbody, tr, td { display: block; width: 100%; }
+    thead { display: none; }
+    tr.leg-head td { padding: .8rem .85rem .75rem; }
+    tr.stop {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: baseline;
+      column-gap: .75rem;
+      padding: .7rem .1rem;
+      border-bottom: 1px solid var(--rule);
+      transition: padding .32s cubic-bezier(.22, .61, .36, 1);
+    }
+    tr.stop.folded { padding-top: 0; padding-bottom: 0; border-bottom-color: transparent; }
+    tr.stop td, tr.stop td:first-child { padding: 0; border: 0; }
+    tr.stop:hover td { background: none; }
+    tr.stop td:nth-child(1) { grid-column: 1; grid-row: 1 / span 2; align-self: center; }
+    tr.stop td:nth-child(2) { grid-column: 3; grid-row: 1; text-align: right; }
+    tr.stop td:nth-child(3) { grid-column: 2; grid-row: 1; }
+    tr.stop td:nth-child(4) { grid-column: 2; grid-row: 2; }
+    tr.stop td:nth-child(5) { grid-column: 3; grid-row: 2; }
+    .name { font-size: 1rem; }
+    .hours, .ride { font-size: .72rem; }
+    .flag { margin-left: 0; margin-top: .2rem; }
+    .leg-bar .open { margin-left: 0; }
+    .rider { width: 2.1rem; margin-left: -1.05rem; }
+    .track { margin: 0 1.1rem; }
+    .progress { font-size: .72rem; gap: .6rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bar i, .rider, .chev, tr.stop td, tr.stop, tr.stop .cell, .tick { transition: none; }
+    .progress.rolling .wheel { animation: none; }
+  }
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -362,10 +437,28 @@
     </div>
   </header>
 
-  <div class="progress">
-    <span id="count">0 of 23</span>
-    <span class="bar"><i id="fill"></i></span>
-    <span id="left">39.8 km to ride</span>
+  <div class="progress" id="progress">
+    <span class="cap" id="count">0 of 23</span>
+    <div class="track">
+      <div class="rider" id="rider" aria-hidden="true">
+        <svg viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <g class="wheel">
+            <circle cx="13" cy="28" r="9"></circle>
+            <path d="M13 19v18M4 28h18M6.6 21.6l12.8 12.8M19.4 21.6L6.6 34.4" stroke-width="1"></path>
+          </g>
+          <g class="wheel">
+            <circle cx="51" cy="28" r="9"></circle>
+            <path d="M51 19v18M42 28h18M44.6 21.6l12.8 12.8M57.4 21.6L44.6 34.4" stroke-width="1"></path>
+          </g>
+          <path d="M13 28l13-11h12M26 17l6 11M32 28h19M38 17l-4-4h-5"></path>
+          <path d="M22 13h8M29 13l-3 4"></path>
+          <circle cx="32" cy="28" r="2.2" stroke-width="1.5"></circle>
+        </svg>
+      </div>
+      <div class="bar"><i id="fill"></i></div>
+    </div>
+    <span class="cap right" id="left">39.8 km to ride</span>
   </div>
 
   <section>
@@ -373,29 +466,28 @@
       <h2>The route</h2>
       <span class="eyebrow">three legs · 23 stops</span>
     </div>
-    <div class="table-scroll">
-      <table>
-        <thead>
-          <tr>
-            <th><span class="eyebrow">✓</span></th>
-            <th>#</th>
-            <th>Place</th>
-            <th>Saturday</th>
-            <th class="num">Ride from previous</th>
-          </tr>
-        </thead>
-        <tbody id="rows"></tbody>
-      </table>
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <th><span class="eyebrow">✓</span></th>
+          <th>#</th>
+          <th>Place</th>
+          <th>Saturday</th>
+          <th class="num">Ride from previous</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
   </section>
 
   <footer>
     <p id="status">Ticks are remembered in this browser.</p>
-    <p><button class="reset" id="reset" type="button">Clear all ticks</button></p>
+    <button class="reset" id="reset" type="button">Clear all ticks</button>
   </footer>
 </div>
 
 <script>
+  // name, street, Saturday hours, ride from the previous stop, km of that ride
   var STOPS = [
     ["Coffee Kamionkowska", "Kamionkowska 9/U3", "8:00 – 20:00", "Start point", 0],
     ["No i Co", "Kamionkowska 19/U2", "9:00 – 20:00", "~1 min · 0.2 km", 0.2],
@@ -422,20 +514,20 @@
     ["Fat White Coffee Bar", "Gen. W. Andersa 6/LU2", "8:00 – 16:55", "~11 min · 2.8 km", 2.8]
   ];
 
-  // Only the stops that can shut the ride down get a flag; a 19:00 close cannot.
+  // Only the stops that can end the ride carry a flag; a 19:00 close cannot.
   var FLAGS = { 18: "closes 14:00", 22: "closes 16:55", 10: "closes 17:00", 5: "closes 17:30", 9: "call ahead" };
 
+  // first stop, last stop, name, the chain of places, the cycling directions
   var LEGS = [
-    [0, 4, "Leg 1 · Praga", "Coffee Kamionkowska → No i Co → ROST → Domo Bake.ry → MUAS COFFEE",
-     "https://www.google.com/maps/dir/Coffee+Kamionkowska+I+Kawa+speciality+I+Wino+I+Piekarnia+rzemie%C5%9Blnicza+I+%C5%9Aniadania+I+Cukiernia+I+Wypieki+domowe+I+Lunch+I,+Kamionkowska+9%2FU3,+Warszawa,+Polska/No+i+Co,+Kamionkowska+19%2FU2,+Warszawa,+Poland/ROST+microroastery+%26+caf%C3%A9,+Kobielska+55,+Warszawa,+Polska/Domo+Bake.ry,+Mi%C4%99dzyborska+57%2F65,+Warszawa,+Polska/MUAS+COFFEE,+Dolna+30A,+Warszawa,+Polska/data=!4m32!4m31!1m5!1m1!19sChIJb7W-RgXNHkcRCRuaUFViE5U!2m2!1d21.0616272!2d52.247735399999996!1m5!1m1!19sChIJuW8JyrXNHkcRlfIjwRgMQCU!2m2!1d21.0632475!2d52.247651999999995!1m5!1m1!19sChIJ9ZOrZlnNHkcR3ED4GGR65EU!2m2!1d21.082909!2d52.247242!1m5!1m1!19sChIJ4ZsG5HXNHkcR1CxDvBdqWxI!2m2!1d21.0793051!2d52.2394256!1m5!1m1!19sChIJ69kyex3NHkcRDiZTC35u1GA!2m2!1d21.0286379!2d52.2004564!3e1?entry=gemini&utm_source=gemini&utm_campaign=gem-default"],
-    [5, 13, "Leg 2 · Mokotów to Śródmieście", "MUAS COFFEE → Pies Cafe → BOZO → Cukiernia Kostki → Filtry Cafe → Błogo → Cafe Central → El Cafetero → Relax na Wilczej → Pan tu nie stał",
-     "https://www.google.com/maps/dir/MUAS+COFFEE,+Dolna+30A,+Warszawa,+Polska/Pies+Cafe,+Konduktorska+14%2FU1,+Warszawa,+Poland/BOZO,+Jurija+Gagarina+8,+Warszawa,+Poland/Cukiernia+Kostki,+Antoniego+J%C3%B3zefa+Madali%C5%84skiego+35%2F19,+Warszawa,+Polska/Filtry+Cafe,+Juliana+Ursyna+Niemcewicza+3,+Warszawa,+Poland/B%C5%82ogo.+Pracownia+Cukiernicza,+Andrzejowska+9,+Warszawa,+Polska/Cafe+Central,+Lwowska+2A,+Warszawa,+Poland/El+Cafetero+Kawiarnia+-+Emilii+Plater,+Emilii+Plater+8,+Warszawa,+Polska/Relax+na+Wilczej,+Wilcza+17,+Warszawa,+Polska/Pan+tu+nie+sta%C5%82,+Koszykowa+34%2F50,+Warszawa,+Polska/data=!4m62!4m61!1m5!1m1!19sChIJ69kyex3NHkcRDiZTC35u1GA!2m2!1d21.0286379!2d52.2004564!1m5!1m1!19sChIJP4YK3XXNHkcR2HqnVb7SYPg!2m2!1d21.0292466!2d52.2014651!1m5!1m1!19sChIJv_iqQr3NHkcRvjlgjzU06aw!2m2!1d21.045846299999997!2d52.2071152!1m5!1m1!19sChIJTdNWbgDNHkcRJSTA2wMTD0E!2m2!1d21.015397999999998!2d52.2041475!1m5!1m1!19sChIJOeCiO5bMHkcRr322Y6Dx2w0!2m2!1d20.9885493!2d52.2204761!1m5!1m1!19sChIJ97Cr6T7NHkcR84PttUXDCSI!2m2!1d20.9812519!2d52.2214947!1m5!1m1!19sChIJqfj8l_HNHkcR9ySVbhm6uQI!2m2!1d21.0123648!2d52.2205036!1m5!1m1!19sChIJix7ahIHNHkcRPMe-4fOX6cg!2m2!1d21.00825!2d52.2237406!1m5!1m1!19sChIJiy1dZGnNHkcRt8AxTMoosxI!2m2!1d21.018664299999998!2d52.2253608!1m5!1m1!19sChIJzdzV9u7MHkcRzy215vwhny0!2m2!1d21.0140925!2d52.2229357!3e1?entry=gemini&utm_source=gemini&utm_campaign=gem-default"],
-    [14, 22, "Leg 3 · the river and Muranów", "Pan tu nie stał → Przystań → Coffeedesk → HELISA → cor. → Labuna → Dobra Materia → Tekla → ASTRA → Fat White",
-     "https://www.google.com/maps/dir/Pan+tu+nie+sta%C5%82,+Koszykowa+34%2F50,+Warszawa,+Polska/Przysta%C5%84+kawiarnia,+Bulwar+Flotylli+Pi%C5%84skiej+1E,+Warszawa,+Polska/Coffeedesk+Kawiarnia+-+Nowy+%C5%9Awiat,+Nowy+%C5%9Awiat+6%2F12,+Warszawa,+Polska/HELISA+COLLAGEN+CAFE,+Moliera+6,+Warszawa,+Polska/cor.+specialty+coffee,+Krakowskie+Przedmie%C5%9Bcie+62,+Warszawa,+Polska/Labuna+-+Kawa+i+Akcesoria,+P%C5%82ocka+22A,+Warszawa,+Polska/Kawiarnia+Dobra+Materia,+Nowolipki+13,+Warszawa,+Polska/Tekla+-+kawa+i+winyle,+Genera%C5%82a+W%C5%82adys%C5%82awa+Andersa+13,+Warszawa,+Poland/ASTRA+Coffeebar,+Kaliny+J%C3%B3zefa+Madali%C5%84skiego+9,+Warszawa,+Polska/Fat+White+Coffee+Bar,+Genera%C5%82a+W%C5%82adys%C5%82awa+Andersa+6%2FLU2,+Warszawa,+Poland/data=!4m62!4m61!1m5!1m1!19sChIJzdzV9u7MHkcRzy215vwhny0!2m2!1d21.0140925!2d52.2229357!1m5!1m1!19sChIJU4fXNTXNHkcROIyVRt-z7VE!2m2!1d21.049284399999998!2d52.220902699999996!1m5!1m1!19sChIJo_yUEc3NHkcRL2l-ePTw-tc!2m2!1d21.0219302!2d52.230766499999994!1m5!1m1!19sChIJSXl_6OvNHkcRspe34HwMgLA!2m2!1d21.011689!2d52.2442071!1m5!1m1!19sChIJKWK5GQDNHkcRH8VV4ITwdZI!2m2!1d21.014485!2d52.2451194!1m5!1m1!19sChIJH3kzL5vJHkcRb38JptuXzM0!2m2!1d20.9657837!2d52.2351296!1m5!1m1!19sChIJk7jD-qPNHkcRGP_7kzA7Hrc!2m2!1d20.9945272!2d52.2455959!1m5!1m1!19sChIJF5m0tE3NHkcROPtFRO6a2kA!2m2!1d20.9970057!2d52.248255699999994!1m5!1m1!19sChIJXedhIgDLHkcR7B4x0cHzVMg!2m2!1d20.966455699999997!2d52.2563445!1m5!1m1!19sChIJo3nJanrMHkcRWJfFi_wf1pM!2m2!1d20.999205999999997!2d52.250166!3e1?entry=gemini&utm_source=gemini&utm_campaign=gem-default"]
+    [0, 4, "Leg 1 · Praga", "Coffee Kamionkowska → No i Co → ROST → Domo Bake.ry → MUAS COFFEE", "https://www.google.com/maps/dir/Coffee+Kamionkowska+I+Kawa+speciality+I+Wino+I+Piekarnia+rzemie%C5%9Blnicza+I+%C5%9Aniadania+I+Cukiernia+I+Wypieki+domowe+I+Lunch+I,+Kamionkowska+9%2FU3,+Warszawa,+Polska/No+i+Co,+Kamionkowska+19%2FU2,+Warszawa,+Poland/ROST+microroastery+%26+caf%C3%A9,+Kobielska+55,+Warszawa,+Polska/Domo+Bake.ry,+Mi%C4%99dzyborska+57%2F65,+Warszawa,+Polska/MUAS+COFFEE,+Dolna+30A,+Warszawa,+Polska/data=!4m32!4m31!1m5!1m1!19sChIJb7W-RgXNHkcRCRuaUFViE5U!2m2!1d21.0616272!2d52.247735399999996!1m5!1m1!19sChIJuW8JyrXNHkcRlfIjwRgMQCU!2m2!1d21.0632475!2d52.247651999999995!1m5!1m1!19sChIJ9ZOrZlnNHkcR3ED4GGR65EU!2m2!1d21.082909!2d52.247242!1m5!1m1!19sChIJ4ZsG5HXNHkcR1CxDvBdqWxI!2m2!1d21.0793051!2d52.2394256!1m5!1m1!19sChIJ69kyex3NHkcRDiZTC35u1GA!2m2!1d21.0286379!2d52.2004564!3e1?entry=gemini&utm_source=gemini&utm_campaign=gem-default"],
+    [5, 13, "Leg 2 · Mokotów to Śródmieście", "MUAS COFFEE → Pies Cafe → BOZO → Cukiernia Kostki → Filtry Cafe → Błogo → Cafe Central → El Cafetero → Relax na Wilczej → Pan tu nie stał", "https://www.google.com/maps/dir/MUAS+COFFEE,+Dolna+30A,+Warszawa,+Polska/Pies+Cafe,+Konduktorska+14%2FU1,+Warszawa,+Poland/BOZO,+Jurija+Gagarina+8,+Warszawa,+Poland/Cukiernia+Kostki,+Antoniego+J%C3%B3zefa+Madali%C5%84skiego+35%2F19,+Warszawa,+Polska/Filtry+Cafe,+Juliana+Ursyna+Niemcewicza+3,+Warszawa,+Poland/B%C5%82ogo.+Pracownia+Cukiernicza,+Andrzejowska+9,+Warszawa,+Polska/Cafe+Central,+Lwowska+2A,+Warszawa,+Poland/El+Cafetero+Kawiarnia+-+Emilii+Plater,+Emilii+Plater+8,+Warszawa,+Polska/Relax+na+Wilczej,+Wilcza+17,+Warszawa,+Polska/Pan+tu+nie+sta%C5%82,+Koszykowa+34%2F50,+Warszawa,+Polska/data=!4m62!4m61!1m5!1m1!19sChIJ69kyex3NHkcRDiZTC35u1GA!2m2!1d21.0286379!2d52.2004564!1m5!1m1!19sChIJP4YK3XXNHkcR2HqnVb7SYPg!2m2!1d21.0292466!2d52.2014651!1m5!1m1!19sChIJv_iqQr3NHkcRvjlgjzU06aw!2m2!1d21.045846299999997!2d52.2071152!1m5!1m1!19sChIJTdNWbgDNHkcRJSTA2wMTD0E!2m2!1d21.015397999999998!2d52.2041475!1m5!1m1!19sChIJOeCiO5bMHkcRr322Y6Dx2w0!2m2!1d20.9885493!2d52.2204761!1m5!1m1!19sChIJ97Cr6T7NHkcR84PttUXDCSI!2m2!1d20.9812519!2d52.2214947!1m5!1m1!19sChIJqfj8l_HNHkcR9ySVbhm6uQI!2m2!1d21.0123648!2d52.2205036!1m5!1m1!19sChIJix7ahIHNHkcRPMe-4fOX6cg!2m2!1d21.00825!2d52.2237406!1m5!1m1!19sChIJiy1dZGnNHkcRt8AxTMoosxI!2m2!1d21.018664299999998!2d52.2253608!1m5!1m1!19sChIJzdzV9u7MHkcRzy215vwhny0!2m2!1d21.0140925!2d52.2229357!3e1?entry=gemini&utm_source=gemini&utm_campaign=gem-default"],
+    [14, 22, "Leg 3 · the river and Muranów", "Pan tu nie stał → Przystań → Coffeedesk → HELISA → cor. → Labuna → Dobra Materia → Tekla → ASTRA → Fat White", "https://www.google.com/maps/dir/Pan+tu+nie+sta%C5%82,+Koszykowa+34%2F50,+Warszawa,+Polska/Przysta%C5%84+kawiarnia,+Bulwar+Flotylli+Pi%C5%84skiej+1E,+Warszawa,+Polska/Coffeedesk+Kawiarnia+-+Nowy+%C5%9Awiat,+Nowy+%C5%9Awiat+6%2F12,+Warszawa,+Polska/HELISA+COLLAGEN+CAFE,+Moliera+6,+Warszawa,+Polska/cor.+specialty+coffee,+Krakowskie+Przedmie%C5%9Bcie+62,+Warszawa,+Polska/Labuna+-+Kawa+i+Akcesoria,+P%C5%82ocka+22A,+Warszawa,+Polska/Kawiarnia+Dobra+Materia,+Nowolipki+13,+Warszawa,+Polska/Tekla+-+kawa+i+winyle,+Genera%C5%82a+W%C5%82adys%C5%82awa+Andersa+13,+Warszawa,+Poland/ASTRA+Coffeebar,+Kaliny+J%C3%B3zefa+Madali%C5%84skiego+9,+Warszawa,+Polska/Fat+White+Coffee+Bar,+Genera%C5%82a+W%C5%82adys%C5%82awa+Andersa+6%2FLU2,+Warszawa,+Poland/data=!4m62!4m61!1m5!1m1!19sChIJzdzV9u7MHkcRzy215vwhny0!2m2!1d21.0140925!2d52.2229357!1m5!1m1!19sChIJU4fXNTXNHkcROIyVRt-z7VE!2m2!1d21.049284399999998!2d52.220902699999996!1m5!1m1!19sChIJo_yUEc3NHkcRL2l-ePTw-tc!2m2!1d21.0219302!2d52.230766499999994!1m5!1m1!19sChIJSXl_6OvNHkcRspe34HwMgLA!2m2!1d21.011689!2d52.2442071!1m5!1m1!19sChIJKWK5GQDNHkcRH8VV4ITwdZI!2m2!1d21.014485!2d52.2451194!1m5!1m1!19sChIJH3kzL5vJHkcRb38JptuXzM0!2m2!1d20.9657837!2d52.2351296!1m5!1m1!19sChIJk7jD-qPNHkcRGP_7kzA7Hrc!2m2!1d20.9945272!2d52.2455959!1m5!1m1!19sChIJF5m0tE3NHkcROPtFRO6a2kA!2m2!1d20.9970057!2d52.248255699999994!1m5!1m1!19sChIJXedhIgDLHkcR7B4x0cHzVMg!2m2!1d20.966455699999997!2d52.2563445!1m5!1m1!19sChIJo3nJanrMHkcRWJfFi_wf1pM!2m2!1d20.999205999999997!2d52.250166!3e1?entry=gemini&utm_source=gemini&utm_campaign=gem-default"]
   ];
 
   var STORE_KEY = "warsaw-cafe-crawl-done";
   var state = readState();
+  var overrides = {};
+  var rollTimer = null;
 
   function readState() {
     var saved = [];
@@ -450,6 +542,10 @@
 
   function esc(s) {
     return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function cell(cls, html) {
+    return '<td class="' + cls + '"><div class="cell"><div>' + html + "</div></div></td>";
   }
 
   function render() {
@@ -468,17 +564,17 @@
       for (var i = leg[0]; i <= leg[1]; i++) {
         var s = STOPS[i];
         var done = !!state[i];
-        var flag = FLAGS[i] ? '<span class="flag">' + FLAGS[i] + "</span>" : "";
         var here = "https://www.google.com/maps/dir/?api=1&destination=" +
           encodeURIComponent(s[0] + ", " + s[1] + ", Warszawa");
-        html += '<tr class="stop' + (done ? " done" : "") + '" data-leg="' + li + '"' + (open ? "" : " hidden") + ">" +
+        var flag = FLAGS[i] ? '<span class="flag">' + FLAGS[i] + "</span>" : "";
+        html += '<tr class="stop' + (done ? " done" : "") + (open ? "" : " folded") + '" data-leg="' + li + '">' +
           '<td><input class="tick" type="checkbox" data-i="' + i + '"' + (done ? " checked" : "") +
             ' aria-label="Mark ' + esc(s[0]) + ' as done"></td>' +
-          '<td class="stop-no">' + String(i + 1).padStart(2, "0") + "</td>" +
-          '<td><a class="name" href="' + esc(here) + '" target="_blank" rel="noopener">' + esc(s[0]) + "</a>" + flag +
-            '<span class="sub">' + esc(s[1]) + "</span></td>" +
-          '<td class="hours">' + esc(s[2]) + "</td>" +
-          '<td class="ride">' + esc(s[3]).replace("Start point", "<em>start</em>") + "</td>" +
+          cell("stop-no", String(i + 1).padStart(2, "0")) +
+          cell("place", '<a class="name" href="' + esc(here) + '" target="_blank" rel="noopener">' +
+            esc(s[0]) + "</a>" + flag + '<span class="sub">' + esc(s[1]) + "</span>") +
+          cell("hours", esc(s[2])) +
+          cell("ride", esc(s[3]).replace("Start point", "<em>start</em>")) +
           "</tr>";
       }
     });
@@ -508,7 +604,6 @@
   // A leg folds itself away once its last stop is ticked; opening or closing one
   // by hand overrides that until the next tick in it, which is the moment the
   // finished state changed and the override stopped describing anything.
-  var overrides = {};
   function isCollapsed(li) {
     return li in overrides ? overrides[li] : legFinished(li);
   }
@@ -520,7 +615,7 @@
     head.querySelector(".leg-toggle").setAttribute("aria-expanded", String(open));
     head.querySelector(".leg-count").textContent = legCount(li);
     var rows = document.querySelectorAll('tr.stop[data-leg="' + li + '"]');
-    for (var i = 0; i < rows.length; i++) { rows[i].hidden = !open; }
+    for (var i = 0; i < rows.length; i++) { rows[i].classList.toggle("folded", !open); }
   }
 
   function updateTotals() {
@@ -529,12 +624,23 @@
       total += s[4];
       if (state[i]) { done++; ridden += s[4]; }
     });
+    var pct = done / STOPS.length * 100;
     document.getElementById("count").textContent = done + " of " + STOPS.length;
-    document.getElementById("fill").style.width = (done / STOPS.length * 100) + "%";
+    document.getElementById("fill").style.width = pct + "%";
+    document.getElementById("rider").style.left = pct + "%";
     var left = Math.max(0, total - ridden);
     document.getElementById("left").textContent = done === STOPS.length
       ? "route complete"
       : left.toFixed(1) + " km to ride";
+  }
+
+  // The wheels turn only while the bike is moving between two stops. A bike
+  // spinning its wheels while parked reads as a busy spinner, not a ride.
+  function roll() {
+    var bar = document.getElementById("progress");
+    bar.classList.add("rolling");
+    clearTimeout(rollTimer);
+    rollTimer = setTimeout(function () { bar.classList.remove("rolling"); }, 750);
   }
 
   document.getElementById("rows").addEventListener("change", function (e) {
@@ -547,6 +653,7 @@
     delete overrides[li];
     applyLeg(li);
     updateTotals();
+    roll();
     save();
   });
 
@@ -562,6 +669,7 @@
     state = {};
     overrides = {};
     render();
+    roll();
     save();
   });
 
