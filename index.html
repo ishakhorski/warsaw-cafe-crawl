@@ -199,6 +199,7 @@
     transition: padding .32s cubic-bezier(.22, .61, .36, 1);
   }
   tr.stop td:first-child { padding-left: 0; }
+  tr.stop .pick .cell > div { line-height: 0; }
   tr.stop .cell {
     display: grid;
     grid-template-rows: 1fr;
@@ -568,8 +569,8 @@
           encodeURIComponent(s[0] + ", " + s[1] + ", Warszawa");
         var flag = FLAGS[i] ? '<span class="flag">' + FLAGS[i] + "</span>" : "";
         html += '<tr class="stop' + (done ? " done" : "") + (open ? "" : " folded") + '" data-leg="' + li + '">' +
-          '<td><input class="tick" type="checkbox" data-i="' + i + '"' + (done ? " checked" : "") +
-            ' aria-label="Mark ' + esc(s[0]) + ' as done"></td>' +
+          cell("pick", '<input class="tick" type="checkbox" data-i="' + i + '"' + (done ? " checked" : "") +
+            ' aria-label="Mark ' + esc(s[0]) + ' as done">') +
           cell("stop-no", String(i + 1).padStart(2, "0")) +
           cell("place", '<a class="name" href="' + esc(here) + '" target="_blank" rel="noopener">' +
             esc(s[0]) + "</a>" + flag + '<span class="sub">' + esc(s[1]) + "</span>") +
